@@ -47,5 +47,24 @@ app.post('/order', async (req, res) => {
     }
 });
 
+// Rota para Obter dados do pedido (GET)
+app.get('/order/:numeroPedido', async (req, res) => {
+    try {
+        // O Node pega o valor que você digitou na URL através do req.params
+        const idBuscado = req.params.numeroPedido;
+
+        // Busca no banco de dados
+        const pedido = await Order.findByPk(idBuscado, { include: [Item] });
+
+        if (pedido) {
+            res.json(pedido); // Retorna os dados se encontrar
+        } else {
+            res.status(404).json({ mensagem: "Pedido não encontrado" });
+        }
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
+    }
+});
+
 // Iniciar o Servidor
 app.listen(3000, () => console.log("🚀 Servidor rodando em http://localhost:3000"));
